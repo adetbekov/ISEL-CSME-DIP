@@ -1,11 +1,10 @@
 import numpy as np
 import cv2, os
 
-path = 'lab1assets/'
+path = 'assets/'
 files = []
 for f in os.listdir(path):
-    if os.path.splitext(f)[1].lower() in ('.jpg'):
-        files.append(cv2.imread(path + f))
+    files.append(cv2.imread(path + f))
 imgs = np.array(files)
 
 areas = [8100, 11000, 12000, 14000, 16000, 18000, 19000]
@@ -46,7 +45,7 @@ for img in imgs:
                 currentDenominations = denominations[i]
 
                 if s >= thisElement and s <= nextElement:
-                    if s >= 19300 and s <= 19500:
+                    if s >= 19100 and s <= 19500:
                         break
                     else:
                         total += currentDenominations
