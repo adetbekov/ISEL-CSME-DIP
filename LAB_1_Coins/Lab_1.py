@@ -1,4 +1,9 @@
-"""Lab_1.py: Coin Detection and Counting."""
+# -*- coding: utf-8 -*-
+"""
+Lab_1.py: Coin Detection and Counting.
+ISEL, Computer Science and Multimedia Engineering, Digital Image processing
+November 2017, Lisbon, Portugal
+"""
 __author__ = "Yeldos Adetbekov"
 __email__ = "dosya@inbox.ru"
 
@@ -14,7 +19,7 @@ imgs = np.array(files)
 areas = [7000, 10000, 11000, 13000, 15000, 17000, 18000, 20000]
 denominations = [0.01, 0.02, 0.10, 0.05, 0.20, 1, 0.50, 2]
 
-
+# Get string foramted amount of money
 def get_nominal(n):
     n = float(n)
     if n >= 1:
@@ -25,7 +30,7 @@ def get_nominal(n):
     else:
         return "{} cents".format("{:0.2f}".format(np.round(n-int(n), decimals=2))[2:])
     
-
+# Disk structuring element
 def disk(r):
     y, x = np.ogrid[-r : r+1, -r : r+1]
     return 1 * ( x ** 2 + y ** 2 <= r ** 2 )
@@ -33,15 +38,15 @@ def disk(r):
 
 for img in imgs:
     total = 0
-    b, g, r = cv2.split(img)
+    b, g, r = cv2.split(img) # Split to 3 color channels 
     retval, threshold = cv2.threshold(r, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
     floodfill = threshold.copy()
     h, w = threshold.shape[:2]
-    mask = np.zeros((h + 2, w + 2), np.uint8)
+    mask = np.zeros((h + 2, w + 2), np.uint8) # Size needs to be 2 pixels than the image.
     cv2.floodFill(floodfill, mask, (0, 0), 255)
-    floodfill_inverted = cv2.bitwise_not(floodfill)
-    cleaned_holes = cv2.morphologyEx(floodfill, cv2.MORPH_CLOSE, disk(3))
+    floodfill_inverted = cv2.bitwise_not(floodfill) 
+    cleaned_holes = cv2.morphologyEx(floodfill, cv2.MORPH_CLOSE, disk(3)) # Cleaning noises
     out = cv2.bitwise_not(( threshold | floodfill_inverted ) + cleaned_holes)
 
     erosion = cv2.erode(out, disk(8), iterations = 2)
@@ -49,6 +54,7 @@ for img in imgs:
 
     im2, contours, hierarchy = cv2.findContours(dilation, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
     
+    # Cleaning related objects with hole
     cleaned_contours = []
     for (i, c) in enumerate(contours):
         if(hierarchy[0][i][2] == -1 and hierarchy[0][i][3] == -1):
