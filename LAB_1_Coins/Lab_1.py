@@ -62,13 +62,12 @@ for img in imgs:
     
     for c in cleaned_contours:
         m = cv2.moments(c)
+        s = cv2.contourArea(c) or 1
         (x, y), radius = cv2.minEnclosingCircle(c)
         center = (int(x), int(y))
         radius = int(radius)
         perimeter = cv2.arcLength(c, True)
-        circularity = (np.abs(perimeter) ** 2) / (m['m00'] or 1)
-        m = cv2.moments(c)
-        s = cv2.contourArea(c)
+        circularity = (np.abs(perimeter) ** 2) / s
         top = (int(x) - int(radius), int(y) - int(radius) - 7)
 
         if(circularity >= 13.5 and circularity <= 18):
